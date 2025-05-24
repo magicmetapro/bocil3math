@@ -1,217 +1,163 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Game Hitung Gambar Anak</title>
+  <meta charset="UTF-8">
+  <title>Game Hitung Emoji</title>
   <style>
     body {
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      background: linear-gradient(to bottom right, #e0f7fa, #fce4ec);
+      font-family: 'Comic Sans MS', cursive;
+      background: linear-gradient(to right, #fdfbfb, #ebedee);
       text-align: center;
-      padding: 20px;
       margin: 0;
-      min-height: 100vh;
+      padding: 20px;
     }
 
     h1 {
-      color: #d6336c;
-      text-shadow: 1px 1px white;
+      font-size: 2.2rem;
+      color: #ff4081;
     }
 
-    .level {
-      font-size: 1.2rem;
-      margin-bottom: 15px;
+    #targetEmoji {
+      font-size: 4rem;
+      margin: 10px 0;
     }
 
-    .target-image {
-      width: 100px;
-      height: 100px;
-      margin: 10px auto;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      border: 3px solid #ff6f91;
-      border-radius: 12px;
-    }
-
-    #imageContainer {
+    #emojiContainer {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
-      margin: 20px 0;
-    }
-
-    .item-img {
-      width: 60px;
-      height: 60px;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-    }
-
-    .choices {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
+      font-size: 2.2rem;
+      gap: 15px;
+      margin: 20px auto;
+      max-width: 90%;
     }
 
     .choice-btn {
+      font-size: 1.1rem;
       padding: 10px 20px;
-      font-size: 1.2rem;
+      margin: 8px;
+      background-color: #4CAF50;
+      color: white;
       border: none;
       border-radius: 10px;
-      background-color: #ff6f91;
-      color: white;
       cursor: pointer;
-      transition: 0.3s;
+      transition: background 0.3s;
     }
 
     .choice-btn:hover {
-      background-color: #ff4770;
+      background-color: #388e3c;
     }
 
     #message {
       font-weight: bold;
+      margin-top: 10px;
       font-size: 1.2rem;
-      color: #2e8b57;
-      margin-bottom: 10px;
     }
 
-    #nextLevelBtn {
+    #nextBtn {
       display: none;
+      margin-top: 20px;
       padding: 10px 25px;
       font-size: 1rem;
-      background-color: #38b000;
+      background-color: #2196F3;
       color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
     }
 
-    #nextLevelBtn:hover {
-      background-color: #2a8000;
+    #nextBtn:hover {
+      background-color: #1976D2;
+    }
+
+    #levelText {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      color: #333;
     }
   </style>
 </head>
 <body>
-
-  <h1>🎯 Game Hitung Gambar</h1>
-  <div class="level" id="levelLabel">Level 1</div>
-  <div>Hitung jumlah gambar berikut:</div>
-  <div class="target-image" id="targetImage"></div>
-  <div id="imageContainer"></div>
-  <div class="choices" id="choicesContainer"></div>
+  <h1>🎯 Game Hitung Emoji</h1>
+  <div id="levelText">Level 1</div>
+  <div id="targetEmoji">🚗</div>
+  <div id="emojiContainer"></div>
+  <div id="choices"></div>
   <div id="message"></div>
-  <button id="nextLevelBtn">Lanjut ke Level Berikutnya ➡️</button>
+  <button id="nextBtn">➡️ Level Selanjutnya</button>
 
   <script>
-    const categories = [
-      { name: "apel", img: "https://cdn-icons-png.flaticon.com/512/590/590685.png" },
-      { name: "pisang", img: "https://cdn-icons-png.flaticon.com/512/590/590673.png" },
-      { name: "semangka", img: "https://cdn-icons-png.flaticon.com/512/590/590701.png" },
-      { name: "kucing", img: "https://cdn-icons-png.flaticon.com/512/616/616408.png" },
-      { name: "anjing", img: "https://cdn-icons-png.flaticon.com/512/616/616408.png" },
-      { name: "sapi", img: "https://cdn-icons-png.flaticon.com/512/616/616408.png" },
-      { name: "mobil", img: "https://cdn-icons-png.flaticon.com/512/743/743007.png" },
-      { name: "bus", img: "https://cdn-icons-png.flaticon.com/512/1995/1995470.png" },
-      { name: "truk", img: "https://cdn-icons-png.flaticon.com/512/1995/1995473.png" }
-    ];
+    const emojiString = `🐱🐭🐹🐰🦊🐻🐼🐨🐯🦁🐮🐷🐽🐸🐵🙈🙉🙊🐒🐔🐧🐦🐤🐣🐥🦆🦅🦉🦇🐺🐗🐴🦄🐝🪱🐛🦋🐌🐞🐜🪰🪳🦟🦗🕷🕸🦂🐢🐍🦎🦖🦕🐙🦑🦐🦞🦀🪼🐡🐠🐟🐬🐳🐋🦈🐊🐅🐆🦓🦍🦧🐘🦛🦏🐪🐫🦒🦘🐃🐂🐄🐎🐖🐏🐑🦙🐐🦌🐕🐩🦮🐕‍🦺🐈🐓🦃🦚🦜🦢🦩🐇🦝🦨🦡🍏🍎🍐🍊🍋🍌🍉🍇🍓🫐🍈🍒🍑🥭🍍🥥🥝🍅🍆🥑🥦🥬🥒🌶🚓🚑🚒🚐🛻🚚🚛🚜🛴🚲🛵🏍🛺🚨🚔🚍🚘🚖🛞🚡🚠🚟🚃🚋🚞🚝🚄🚅🚈🚂🚆🚇🚊🚉✈️🛫🛬🛩💺🛰🚀🛸`;
+    let allEmojis = Array.from(new Set(emojiString.split(/(?<=\p{Extended_Pictographic})/gu)))
+      .filter(e => e !== '🪲' && !e.includes('\uFFFD') && e.length <= 3);
 
     let level = 1;
-    let usedIndexes = new Set();
-    const maxLevel = categories.length;
-    const targetImageDiv = document.getElementById("targetImage");
-    const imageContainer = document.getElementById("imageContainer");
-    const choicesContainer = document.getElementById("choicesContainer");
-    const message = document.getElementById("message");
-    const nextLevelBtn = document.getElementById("nextLevelBtn");
-    const levelLabel = document.getElementById("levelLabel");
+    const targetEmojiDiv = document.getElementById("targetEmoji");
+    const emojiContainer = document.getElementById("emojiContainer");
+    const choicesDiv = document.getElementById("choices");
+    const messageDiv = document.getElementById("message");
+    const nextBtn = document.getElementById("nextBtn");
+    const levelText = document.getElementById("levelText");
 
-    function startLevel() {
-      message.textContent = "";
-      nextLevelBtn.style.display = "none";
-      levelLabel.textContent = `Level ${level}`;
-      imageContainer.innerHTML = "";
-      choicesContainer.innerHTML = "";
+    function shuffle(arr) {
+      return arr.sort(() => Math.random() - 0.5);
+    }
 
-      // Pilih kategori yang belum dipakai
-      let index;
-      do {
-        index = Math.floor(Math.random() * categories.length);
-      } while (usedIndexes.has(index));
+    function setupLevel() {
+      messageDiv.textContent = "";
+      nextBtn.style.display = "none";
+      levelText.textContent = `Level ${level}`;
 
-      usedIndexes.add(index);
-      const target = categories[index];
-      targetImageDiv.style.backgroundImage = `url(${target.img})`;
+      const targetEmoji = allEmojis[Math.floor(Math.random() * allEmojis.length)];
+      targetEmojiDiv.textContent = targetEmoji;
 
-      // Tentukan jumlah target (2-5) dan jumlah tambahan random
-      const correctCount = Math.floor(Math.random() * 4) + 2;
-      const distractorCount = Math.floor(Math.random() * 4) + 1;
-      const totalImages = [];
+      const totalCount = 6 + level * 2;
+      const correctCount = Math.floor(Math.random() * (level + 3)) + 1;
 
-      // Tambahkan gambar target
-      for (let i = 0; i < correctCount; i++) {
-        totalImages.push({ img: target.img, name: target.name });
+      const emojiList = Array(correctCount).fill(targetEmoji);
+      while (emojiList.length < totalCount) {
+        const rand = allEmojis[Math.floor(Math.random() * allEmojis.length)];
+        if (rand !== targetEmoji) emojiList.push(rand);
       }
 
-      // Tambahkan gambar acak lainnya
-      while (totalImages.length < correctCount + distractorCount) {
-        const random = categories[Math.floor(Math.random() * categories.length)];
-        if (random.name !== target.name) {
-          totalImages.push({ img: random.img, name: random.name });
-        }
-      }
-
-      // Acak posisi gambar
-      totalImages.sort(() => 0.5 - Math.random());
-
-      // Tampilkan gambar
-      totalImages.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "item-img";
-        div.style.backgroundImage = `url(${item.img})`;
-        imageContainer.appendChild(div);
+      shuffle(emojiList);
+      emojiContainer.innerHTML = "";
+      emojiList.forEach(e => {
+        const span = document.createElement("span");
+        span.textContent = e;
+        emojiContainer.appendChild(span);
       });
 
-      // Buat pilihan jawaban
-      const options = generateOptions(correctCount);
-      options.forEach(opt => {
+      const options = new Set();
+      options.add(correctCount);
+      while (options.size < 4) {
+        const n = correctCount + Math.floor(Math.random() * 5) - 2;
+        if (n > 0) options.add(n);
+      }
+
+      choicesDiv.innerHTML = "";
+      shuffle(Array.from(options)).forEach(num => {
         const btn = document.createElement("button");
         btn.className = "choice-btn";
-        btn.textContent = opt;
-        btn.onclick = () => checkAnswer(opt, correctCount);
-        choicesContainer.appendChild(btn);
+        btn.textContent = num;
+        btn.onclick = () => {
+          if (num === correctCount) {
+            messageDiv.textContent = "✅ Benar!";
+            nextBtn.style.display = "inline-block";
+          } else {
+            messageDiv.textContent = "❌ Coba lagi!";
+          }
+        };
+        choicesDiv.appendChild(btn);
       });
     }
 
-    function generateOptions(correct) {
-      const set = new Set([correct]);
-      while (set.size < 4) {
-        const val = correct + Math.floor(Math.random() * 5) - 2;
-        if (val > 0) set.add(val);
-      }
-      return Array.from(set).sort(() => Math.random() - 0.5);
-    }
-
-    function checkAnswer(selected, correct) {
-      if (selected === correct) {
-        message.textContent = "✅ Benar sekali!";
-        nextLevelBtn.style.display = level < maxLevel ? "inline-block" : "none";
-      } else {
-        message.textContent = "❌ Salah, coba lagi ya!";
-      }
-    }
-
-    nextLevelBtn.addEventListener("click", () => {
+    nextBtn.addEventListener("click", () => {
       level++;
-      startLevel();
+      setupLevel();
     });
 
-    startLevel();
+    setupLevel();
   </script>
 </body>
 </html>
