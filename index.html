@@ -87,9 +87,9 @@
   <button id="nextBtn">➡️ Level Selanjutnya</button>
 
   <script>
-    const emojiString = `🐱🐭🐹🐰🦊🐻🐼🐨🐯🦁🐮🐷🐽🐸🐵🙈🙉🙊🐒🐔🐧🐦🐤🐣🐥🦆🦅🦉🦇🐺🐗🐴🦄🐝🪱🐛🦋🐌🐞🐜🪰🪳🦟🦗🕷🕸🦂🐢🐍🦎🦖🦕🐙🦑🦐🦞🦀🪼🐡🐠🐟🐬🐳🐋🦈🐊🐅🐆🦓🦍🦧🐘🦛🦏🐪🐫🦒🦘🐃🐂🐄🐎🐖🐏🐑🦙🐐🦌🐕🐩🦮🐕‍🦺🐈🐓🦃🦚🦜🦢🦩🐇🦝🦨🦡🍏🍎🍐🍊🍋🍌🍉🍇🍓🫐🍈🍒🍑🥭🍍🥥🥝🍅🍆🥑🥦🥬🥒🌶🚓🚑🚒🚐🛻🚚🚛🚜🛴🚲🛵🏍🛺🚨🚔🚍🚘🚖🛞🚡🚠🚟🚃🚋🚞🚝🚄🚅🚈🚂🚆🚇🚊🚉✈️🛫🛬🛩💺🛰🚀🛸`;
-    let allEmojis = Array.from(new Set(emojiString.split(/(?<=\p{Extended_Pictographic})/gu)))
-      .filter(e => e !== '🪲' && !e.includes('\uFFFD') && e.length <= 3);
+    const emojiString = `🐱🐭🐹🐰🦊🐻🐼🐨🐯🦁🐮🐷🐽🐸🐵🙈🙉🙊🐒🐔🐧🐦🐤🐣🐥🦆🦅🦉🦇🐺🐗🐴🦄🐝🪱🐛🦋🐌🐞🐜🪰🪳🦟🦗🕷🕸🦂🐢🐍🦎🦖🦕🐙🦑🦐🦞🦀🪼🐡🐠🐟🐬🐳🐋🦈🐊🐅🐆🦓🫏🦍🦧🦣🐘🦛🦏🐪🐫🦒🦘🦬🐃🐂🐄🐎🐖🐏🐑🦙🐐🦌🫎🐕🐩🦮🐕‍🦺🐈🐈‍⬛🪽🪶🐓🦃🦤🦚🦜🦢🪿🦩🕊🐇🦝🦨🦡🍏🍎🍐🍊🍋🍌🍉🍇🍓🫐🍈🍒🍑🥭🍍🥥🥝🍅🍆🥑🥦🫛🥬🫜🥒🌶🫑🌽🥕🫒🧄🧅🫚🥔🍠🫘🥐🥯🍞🥖🥨🧀🥚🍳🧈🥞🧇🥓🥩🍗🍖🦴🌭🍔🍟🍕🫓🥪🥙🧆🌮🌯🫔🥗🥘🫕🥫🍝🍜🍲🍛🍣🍱🥟🦪🍤🍙🍚🍘🍥🥠🥮🍢🍡🍧🍨🍦🥧🧁🍰🎂🍮🍭🍬🍫🍿🍩🍪🌰🥜🍯🥛🍼🫖☕️🍵🧃🥤🧋🫙🍶🍺🍻🥂🍷🫗🥃🍸⚽️🏀🏈⚾️🚗🚕🚙🚌🚎🏎🚓🚑🚒🚐🛻🚚🚛🚜🛴🚲🛵🏍🛺🚨🚔🚍🚘🚖🛞🚡🚠🚟🚃🚋🚞🚝🚄🚅🚈🚂🚆🚇🚊🚉✈️🛫🛬🛩💺🛰🚀🛸`;
+    const allEmojis = Array.from(new Set(emojiString.split(/(?<=\p{Extended_Pictographic})/gu)))
+      .filter(e => e !== '🪲' && e.length <= 3);
 
     let level = 1;
     const targetEmojiDiv = document.getElementById("targetEmoji");
@@ -108,19 +108,20 @@
       nextBtn.style.display = "none";
       levelText.textContent = `Level ${level}`;
 
-      const targetEmoji = allEmojis[Math.floor(Math.random() * allEmojis.length)];
+      const emojiChoices = shuffle([...allEmojis]).slice(0, level);
+      const targetEmoji = emojiChoices[0];
       targetEmojiDiv.textContent = targetEmoji;
 
-      const totalCount = 6 + level * 2;
-      const correctCount = Math.floor(Math.random() * (level + 3)) + 1;
+      const correctCount = Math.floor(Math.random() * (level + 2)) + 1;
+      let emojiList = Array(correctCount).fill(targetEmoji);
 
-      const emojiList = Array(correctCount).fill(targetEmoji);
-      while (emojiList.length < totalCount) {
-        const rand = allEmojis[Math.floor(Math.random() * allEmojis.length)];
-        if (rand !== targetEmoji) emojiList.push(rand);
+      for (let i = 1; i < emojiChoices.length; i++) {
+        const count = Math.floor(Math.random() * (level + 2)) + 1;
+        emojiList.push(...Array(count).fill(emojiChoices[i]));
       }
 
-      shuffle(emojiList);
+      emojiList = shuffle(emojiList);
+
       emojiContainer.innerHTML = "";
       emojiList.forEach(e => {
         const span = document.createElement("span");
