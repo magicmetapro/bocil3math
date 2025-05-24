@@ -1,164 +1,59 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Game Hitung Anak</title>
-  <style>
-    body {
-      font-family: 'Comic Sans MS', cursive;
-      background: linear-gradient(to right, #fdfbfb, #ebedee);
-      text-align: center;
-      margin: 0;
-      padding: 20px;
-    }
+function setupLevel() {
+  messageDiv.textContent = "";
+  nextBtn.style.display = "none";
+  levelText.textContent = `Level ${level}`;
 
-    h1 {
-      font-size: 2.2rem;
-      color: #ff4081;
-    }
+  const emojiChoices = shuffle([...allEmojis]).slice(0, level);
+  const targetEmoji = emojiChoices[0];
+  targetEmojiDiv.textContent = targetEmoji;
 
-    #targetEmoji {
-      font-size: 4rem;
-      margin: 10px 0;
-    }
+  const totalEmojis = 10;
+  const correctCount = Math.floor(Math.random() * (totalEmojis - level + 1)) + 1;
 
-    #emojiContainer {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      font-size: 2.2rem;
-      gap: 15px;
-      margin: 20px auto;
-      max-width: 90%;
-    }
+  let emojiList = Array(correctCount).fill(targetEmoji);
 
-    .choice-btn {
-      font-size: 1.1rem;
-      padding: 10px 20px;
-      margin: 8px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
+  // Sisa emoji untuk jenis lain
+  const otherSlots = totalEmojis - correctCount;
+  const otherEmojiTypes = emojiChoices.slice(1);
 
-    .choice-btn:hover {
-      background-color: #388e3c;
-    }
+  let remaining = otherSlots;
+  for (let i = 0; i < otherEmojiTypes.length; i++) {
+    const count = i === otherEmojiTypes.length - 1
+      ? remaining
+      : Math.floor(Math.random() * (remaining + 1));
+    emojiList.push(...Array(count).fill(otherEmojiTypes[i]));
+    remaining -= count;
+  }
 
-    #message {
-      font-weight: bold;
-      margin-top: 10px;
-      font-size: 1.2rem;
-    }
+  emojiList = shuffle(emojiList);
 
-    #nextBtn {
-      display: none;
-      margin-top: 20px;
-      padding: 10px 25px;
-      font-size: 1rem;
-      background-color: #2196F3;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+  emojiContainer.innerHTML = "";
+  emojiList.forEach(e => {
+    const span = document.createElement("span");
+    span.textContent = e;
+    emojiContainer.appendChild(span);
+  });
 
-    #nextBtn:hover {
-      background-color: #1976D2;
-    }
+  const options = new Set();
+  options.add(correctCount);
+  while (options.size < 4) {
+    const n = correctCount + Math.floor(Math.random() * 5) - 2;
+    if (n > 0 && n <= 10) options.add(n);
+  }
 
-    #levelText {
-      font-size: 1.1rem;
-      margin-bottom: 10px;
-      color: #333;
-    }
-  </style>
-</head>
-<body>
-  <h1>🎯 Game Hitung Emoji</h1>
-  <div id="levelText">Level 1</div>
-  <div id="targetEmoji">🚗</div>
-  <div id="emojiContainer"></div>
-  <div id="choices"></div>
-  <div id="message"></div>
-  <button id="nextBtn">➡️ Level Selanjutnya</button>
-
-  <script>
-    const emojiString = `🐱🐭🐹🐰🦊🐻🐼🐨🐯🦁🐮🐷🐽🐸🐵🙈🙉🙊🐒🐔🐧🐦🐤🐣🐥🦆🦅🦉🦇🐺🐗🐴🦄🐝🪱🐛🦋🐌🐞🐜🪰🪳🦟🦗🕷🕸🦂🐢🐍🦎🦖🦕🐙🦑🦐🦞🦀🪼🐡🐠🐟🐬🐳🐋🦈🐊🐅🐆🦓🫏🦍🦧🦣🐘🦛🦏🐪🐫🦒🦘🦬🐃🐂🐄🐎🐖🐏🐑🦙🐐🦌🫎🐕🐩🦮🐕‍🦺🐈🐈‍⬛🪽🪶🐓🦃🦤🦚🦜🦢🪿🦩🕊🐇🦝🦨🦡🍏🍎🍐🍊🍋🍌🍉🍇🍓🫐🍈🍒🍑🥭🍍🥥🥝🍅🍆🥑🥦🫛🥬🫜🥒🌶🫑🌽🥕🫒🧄🧅🫚🥔🍠🫘🥐🥯🍞🥖🥨🧀🥚🍳🧈🥞🧇🥓🥩🍗🍖🦴🌭🍔🍟🍕🫓🥪🥙🧆🌮🌯🫔🥗🥘🫕🥫🍝🍜🍲🍛🍣🍱🥟🦪🍤🍙🍚🍘🍥🥠🥮🍢🍡🍧🍨🍦🥧🧁🍰🎂🍮🍭🍬🍫🍿🍩🍪🌰🥜🍯🥛🍼🫖☕️🍵🧃🥤🧋🫙🍶🍺🍻🥂🍷🫗🥃🍸⚽️🏀🏈⚾️🚗🚕🚙🚌🚎🏎🚓🚑🚒🚐🛻🚚🚛🚜🛴🚲🛵🏍🛺🚨🚔🚍🚘🚖🛞🚡🚠🚟🚃🚋🚞🚝🚄🚅🚈🚂🚆🚇🚊🚉✈️🛫🛬🛩💺🛰🚀🛸`;
-    const allEmojis = Array.from(new Set(emojiString.split(/(?<=\p{Extended_Pictographic})/gu)))
-      .filter(e => e !== '🪲' && e.length <= 3);
-
-    let level = 1;
-    const targetEmojiDiv = document.getElementById("targetEmoji");
-    const emojiContainer = document.getElementById("emojiContainer");
-    const choicesDiv = document.getElementById("choices");
-    const messageDiv = document.getElementById("message");
-    const nextBtn = document.getElementById("nextBtn");
-    const levelText = document.getElementById("levelText");
-
-    function shuffle(arr) {
-      return arr.sort(() => Math.random() - 0.5);
-    }
-
-    function setupLevel() {
-      messageDiv.textContent = "";
-      nextBtn.style.display = "none";
-      levelText.textContent = `Level ${level}`;
-
-      const emojiChoices = shuffle([...allEmojis]).slice(0, level);
-      const targetEmoji = emojiChoices[0];
-      targetEmojiDiv.textContent = targetEmoji;
-
-      const correctCount = Math.floor(Math.random() * (level + 2)) + 1;
-      let emojiList = Array(correctCount).fill(targetEmoji);
-
-      for (let i = 1; i < emojiChoices.length; i++) {
-        const count = Math.floor(Math.random() * (level + 2)) + 1;
-        emojiList.push(...Array(count).fill(emojiChoices[i]));
+  choicesDiv.innerHTML = "";
+  shuffle(Array.from(options)).forEach(num => {
+    const btn = document.createElement("button");
+    btn.className = "choice-btn";
+    btn.textContent = num;
+    btn.onclick = () => {
+      if (num === correctCount) {
+        messageDiv.textContent = "✅ Benar!";
+        nextBtn.style.display = "inline-block";
+      } else {
+        messageDiv.textContent = "❌ Coba lagi!";
       }
-
-      emojiList = shuffle(emojiList);
-
-      emojiContainer.innerHTML = "";
-      emojiList.forEach(e => {
-        const span = document.createElement("span");
-        span.textContent = e;
-        emojiContainer.appendChild(span);
-      });
-
-      const options = new Set();
-      options.add(correctCount);
-      while (options.size < 4) {
-        const n = correctCount + Math.floor(Math.random() * 5) - 2;
-        if (n > 0) options.add(n);
-      }
-
-      choicesDiv.innerHTML = "";
-      shuffle(Array.from(options)).forEach(num => {
-        const btn = document.createElement("button");
-        btn.className = "choice-btn";
-        btn.textContent = num;
-        btn.onclick = () => {
-          if (num === correctCount) {
-            messageDiv.textContent = "✅ Benar!";
-            nextBtn.style.display = "inline-block";
-          } else {
-            messageDiv.textContent = "❌ Coba lagi!";
-          }
-        };
-        choicesDiv.appendChild(btn);
-      });
-    }
-
-    nextBtn.addEventListener("click", () => {
-      level++;
-      setupLevel();
-    });
-
-    setupLevel();
-  </script>
-</body>
-</html>
+    };
+    choicesDiv.appendChild(btn);
+  });
+}
