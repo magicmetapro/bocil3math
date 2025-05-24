@@ -3,33 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Game Hitung Apel 🍎</title>
+  <title>Game Hitung Gambar Anak</title>
   <style>
     body {
       font-family: 'Comic Sans MS', cursive, sans-serif;
-      background: linear-gradient(to bottom right, #ffe0f0, #e0f7ff);
+      background: linear-gradient(to bottom right, #e0f7fa, #fce4ec);
       text-align: center;
       padding: 20px;
       margin: 0;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
 
     h1 {
       color: #d6336c;
       text-shadow: 1px 1px white;
-      margin-bottom: 10px;
     }
 
     .level {
       font-size: 1.2rem;
       margin-bottom: 15px;
-      color: #333;
     }
 
-    #appleContainer {
+    .target-image {
+      width: 100px;
+      height: 100px;
+      margin: 10px auto;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      border: 3px solid #ff6f91;
+      border-radius: 12px;
+    }
+
+    #imageContainer {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -37,12 +43,12 @@
       margin: 20px 0;
     }
 
-    .apple {
+    .item-img {
       width: 60px;
       height: 60px;
-      background-image: url('https://cdn-icons-png.flaticon.com/512/590/590685.png');
       background-size: contain;
       background-repeat: no-repeat;
+      background-position: center;
     }
 
     .choices {
@@ -93,65 +99,110 @@
 </head>
 <body>
 
-  <h1>🎉 Game Hitung Apel 🍎</h1>
+  <h1>🎯 Game Hitung Gambar</h1>
   <div class="level" id="levelLabel">Level 1</div>
-  <div id="appleContainer"></div>
+  <div>Hitung jumlah gambar berikut:</div>
+  <div class="target-image" id="targetImage"></div>
+  <div id="imageContainer"></div>
   <div class="choices" id="choicesContainer"></div>
   <div id="message"></div>
   <button id="nextLevelBtn">Lanjut ke Level Berikutnya ➡️</button>
 
   <script>
+    const categories = [
+      { name: "apel", img: "https://cdn-icons-png.flaticon.com/512/590/590685.png" },
+      { name: "pisang", img: "https://cdn-icons-png.flaticon.com/512/590/590673.png" },
+      { name: "semangka", img: "https://cdn-icons-png.flaticon.com/512/590/590701.png" },
+      { name: "kucing", img: "https://cdn-icons-png.flaticon.com/512/616/616408.png" },
+      { name: "anjing", img: "https://cdn-icons-png.flaticon.com/512/616/616408.png" },
+      { name: "sapi", img: "https://cdn-icons-png.flaticon.com/512/616/616408.png" },
+      { name: "mobil", img: "https://cdn-icons-png.flaticon.com/512/743/743007.png" },
+      { name: "bus", img: "https://cdn-icons-png.flaticon.com/512/1995/1995470.png" },
+      { name: "truk", img: "https://cdn-icons-png.flaticon.com/512/1995/1995473.png" }
+    ];
+
     let level = 1;
-    const maxLevel = 20;
-    const appleContainer = document.getElementById("appleContainer");
+    let usedIndexes = new Set();
+    const maxLevel = categories.length;
+    const targetImageDiv = document.getElementById("targetImage");
+    const imageContainer = document.getElementById("imageContainer");
     const choicesContainer = document.getElementById("choicesContainer");
     const message = document.getElementById("message");
     const nextLevelBtn = document.getElementById("nextLevelBtn");
     const levelLabel = document.getElementById("levelLabel");
 
     function startLevel() {
-      const appleCount = level + 2; // jumlah apel naik tiap level
-      levelLabel.textContent = `Level ${level}`;
       message.textContent = "";
       nextLevelBtn.style.display = "none";
+      levelLabel.textContent = `Level ${level}`;
+      imageContainer.innerHTML = "";
+      choicesContainer.innerHTML = "";
 
-      // Hapus apel sebelumnya
-      appleContainer.innerHTML = "";
-      for (let i = 0; i < appleCount; i++) {
-        const apple = document.createElement("div");
-        apple.className = "apple";
-        appleContainer.appendChild(apple);
+      // Pilih kategori yang belum dipakai
+      let index;
+      do {
+        index = Math.floor(Math.random() * categories.length);
+      } while (usedIndexes.has(index));
+
+      usedIndexes.add(index);
+      const target = categories[index];
+      targetImageDiv.style.backgroundImage = `url(${target.img})`;
+
+      // Tentukan jumlah target (2-5) dan jumlah tambahan random
+      const correctCount = Math.floor(Math.random() * 4) + 2;
+      const distractorCount = Math.floor(Math.random() * 4) + 1;
+      const totalImages = [];
+
+      // Tambahkan gambar target
+      for (let i = 0; i < correctCount; i++) {
+        totalImages.push({ img: target.img, name: target.name });
       }
 
+      // Tambahkan gambar acak lainnya
+      while (totalImages.length < correctCount + distractorCount) {
+        const random = categories[Math.floor(Math.random() * categories.length)];
+        if (random.name !== target.name) {
+          totalImages.push({ img: random.img, name: random.name });
+        }
+      }
+
+      // Acak posisi gambar
+      totalImages.sort(() => 0.5 - Math.random());
+
+      // Tampilkan gambar
+      totalImages.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "item-img";
+        div.style.backgroundImage = `url(${item.img})`;
+        imageContainer.appendChild(div);
+      });
+
       // Buat pilihan jawaban
-      choicesContainer.innerHTML = "";
-      const correct = appleCount;
-      const options = generateOptions(correct);
-      options.forEach(number => {
+      const options = generateOptions(correctCount);
+      options.forEach(opt => {
         const btn = document.createElement("button");
         btn.className = "choice-btn";
-        btn.textContent = number;
-        btn.onclick = () => checkAnswer(number, correct);
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(opt, correctCount);
         choicesContainer.appendChild(btn);
       });
     }
 
     function generateOptions(correct) {
-      const options = new Set();
-      options.add(correct);
-      while (options.size < 4) {
-        const random = correct + Math.floor(Math.random() * 5) - 2;
-        if (random > 0) options.add(random);
+      const set = new Set([correct]);
+      while (set.size < 4) {
+        const val = correct + Math.floor(Math.random() * 5) - 2;
+        if (val > 0) set.add(val);
       }
-      return Array.from(options).sort(() => Math.random() - 0.5);
+      return Array.from(set).sort(() => Math.random() - 0.5);
     }
 
     function checkAnswer(selected, correct) {
       if (selected === correct) {
-        message.textContent = "✅ Benar! Hebat!";
+        message.textContent = "✅ Benar sekali!";
         nextLevelBtn.style.display = level < maxLevel ? "inline-block" : "none";
       } else {
-        message.textContent = "❌ Coba lagi ya!";
+        message.textContent = "❌ Salah, coba lagi ya!";
       }
     }
 
@@ -160,7 +211,6 @@
       startLevel();
     });
 
-    // Mulai pertama kali
     startLevel();
   </script>
 </body>
